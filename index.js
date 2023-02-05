@@ -1,18 +1,24 @@
 const express = require('express');
+const session = require("express-session");
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
-app.use(cors());
 
-app.get('/api/theme/:theme', (req, res) => {
-    if(req.params.theme == 'day') {
-        res.status(200).send({ status: false });
-    }else if(req.params.theme == 'night') {
-        res.status(200).send({ status: true });
+app.use(cors());
+app.use(session({
+  secret: "secret-key",
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.get('/api/theme', (req, res) => {
+    if(req.session.theme != null){
+        req.session.theme = !req.session.theme;
     }else {
-        res.status(400).send({ error: 'Invalid theme!' });
+        req.session.theme = false;
     }
+    res.status(200).send({ status: req.session.theme });
 });
 
 app.use((req, res) => {
