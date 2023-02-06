@@ -5,20 +5,27 @@ const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://127.0.0.1:5501',
+  credentials: true,
+  optionsSuccessStatus: 200,
+}));
 app.use(session({
   secret: "secret-key",
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {  
+    secure: false,        
+    maxAge: 3600000
+  }
 }));
 
-app.get('/api/theme', (req, res) => {
-    if(req.session.theme != null){
-        req.session.theme = !req.session.theme;
-    }else {
-        req.session.theme = false;
-    }
-    res.status(200).send({ status: req.session.theme });
+app.get('/api/:theme', (req, res) => {
+  if(req.params.theme == 'day') {
+    res.status(200).send({theme: 'night', status: false});
+  }else {
+    res.status(200).send({theme: 'day', status: true});
+  }
 });
 
 app.use((req, res) => {
