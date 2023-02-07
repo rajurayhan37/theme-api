@@ -6,7 +6,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:3000','http://localhost:5050'],
+  origin: 'https://demo-theme-one.vercel.app',
   credentials: true,
   optionsSuccessStatus: 200,
 }));
