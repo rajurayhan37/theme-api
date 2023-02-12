@@ -1,39 +1,22 @@
-const express = require('express');
-const session = require("express-session");
-const cors = require('cors');
-const dotenv = require('dotenv');
-dotenv.config();
+const express = require("express");
+const cors = require("cors");
+
 const app = express();
+app.use(cors());
 
-app.use(cors({
-  origin: 'https://demo-theme-one.vercel.app',
-  credentials: true,
-  optionsSuccessStatus: 200,
-}));
+let storedData = null;
 
-app.use(session({
-  secret: "secret-key",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {  
-    secure: false,        
-    maxAge: 3600000
-  }
-}));
-
-app.get('/api/:theme', (req, res) => {
-  if(req.params.theme == 'day') {
-    res.status(200).send({theme: 'night', status: false});
-  }else {
-    res.status(200).send({theme: 'day', status: true});
+app.get("/api", (req, res) => {
+  if (storedData === null) {
+    storedData = false;
+    res.send({ data: storedData });
+  } else {
+    storedData = !storedData;
+    res.send({ data: storedData });
   }
 });
 
-app.use((req, res) => {
-    res.status(404).send({ error: 'Not Found' });
-});  
-
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
